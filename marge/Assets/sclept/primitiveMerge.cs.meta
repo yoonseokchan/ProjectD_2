@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: f834178478bd1514fa923da96410a63a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - knightPrefab: {fileID: 3574168231192286967, guid: aaa3bfa6d27966c4db77972110f61adc, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
