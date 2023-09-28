@@ -4,58 +4,79 @@ using UnityEngine;
 
 public class DragAndShooting : MonoBehaviour
 {
-    private bool isDragging = false;
     private Rigidbody rb;
     private Camera mainCamera;
+    private bool isDragging = false;
+    private Vector3 dragStartPosition;
 
-    public float maxThrowForce = 500.0f; 
+    public float throwForce = 100.0f;
+    public float maxDragDistance = 15.0f;
 
-    private void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
     }
 
-    private void Update()
+    void Update()
     {
-        if (isDragging)
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            Plane plane = new Plane(Vector3.up, Vector3.zero);
-            float distance;
-
-            if (plane.Raycast(ray, out distance))
-            {
-                Vector3 newPosition = ray.GetPoint(distance);
-                rb.MovePosition(newPosition);
-            }
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            StartDragging();
+        }
 
-            if (Physics.Raycast(ray, out hit))
+        if (isDragging)
+        {
+            UpdateDrag();
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (isDragging)
             {
-                if (hit.collider != null && hit.collider.gameObject == gameObject)
-                {
-                    isDragging = true;
-                    rb.isKinematic = false;
-                }
+                ThrowObject();
             }
         }
+    }
 
-        if (Input.GetMouseButtonUp(0) && isDragging)
+    void StartDragging()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
         {
-            isDragging = false;
-
-            
-            Vector3 throwDirection = -transform.up;
-
-            
-            float throwForceMagnitude = maxThrowForce;
-            rb.AddForce(throwDirection * throwForceMagnitude, ForceMode.Impulse);
+            if (hit.collider != null && hit.collider.gameObject == gameObject)
+            {
+                isDragging = true;
+                rb.isKinematic = true;
+                dragStartPosition = transform.position;
+            }
         }
+    }
+
+    void UpdateDrag()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.up, transform.position);
+        float distanceToPlane;
+
+        if (plane.Raycast(ray, out distanceToPlane))
+        {
+            Vector3 newPosition = ray.GetPoint(distanceToPlane);
+            transform.position = newPosition;
+        }
+    }
+
+    void ThrowObject()
+    {
+        isDragging = false;
+        rb.isKinematic = false;
+
+        float dragDistance = Vector3.Distance(dragStartPosition, transform.position);
+        float throwForceMagnitude = Mathf.Lerp(0f, throwForce, dragDistance / maxDragDistance);
+
+        Vector3 throwDirection = (dragStartPosition - transform.position).normalized;
+        rb.velocity = throwDirection * throwForceMagnitude;
     }
 }
