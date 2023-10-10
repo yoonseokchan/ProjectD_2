@@ -8,9 +8,13 @@ public class DragAndShooting : MonoBehaviour
     private Camera mainCamera;
     private bool isDragging = false;
     private Vector3 dragStartPosition;
+    private GameObject clone;
+    private GameObject arrowInstance;
 
     public float throwForce = 100.0f;
     public float maxDragDistance = 15.0f;
+    public GameObject draggablePrefab;
+    public GameObject arrowPrefab;
 
     void Start()
     {
@@ -50,7 +54,24 @@ public class DragAndShooting : MonoBehaviour
             {
                 isDragging = true;
                 rb.isKinematic = true;
+
+                Collider cylinderCollider = GetComponent<Collider>();
+                if(cylinderCollider != null)
+                {
+                    cylinderCollider.enabled = false;
+                }
+
                 dragStartPosition = transform.position;
+
+                clone = Instantiate(draggablePrefab, dragStartPosition, Quaternion.identity);
+                Collider cloneCollider = clone.GetComponent<Collider>();
+                if (cloneCollider != null)
+                {
+                    cloneCollider.enabled = false;
+                }
+
+                arrowInstance = Instantiate(arrowPrefab, clone.transform.position, Quaternion.identity);
+
             }
         }
     }
@@ -68,6 +89,15 @@ public class DragAndShooting : MonoBehaviour
         }
     }
 
+    void UpdateArrow()
+    {
+        if (arrowInstance != null)
+        {
+            Vector3 direction = (clone.transform.position - transform.position).normalized;
+            arrowInstance.transform.rotation = Quaternion.LookRotation(direction);
+        }
+    }
+
     void ThrowObject()
     {
         isDragging = false;
@@ -78,5 +108,16 @@ public class DragAndShooting : MonoBehaviour
 
         Vector3 throwDirection = (dragStartPosition - transform.position).normalized;
         rb.velocity = throwDirection * throwForceMagnitude;
+
+        transform.position = dragStartPosition;
+
+        Collider cylinderCollider = GetComponent<Collider>();
+        if(cylinderCollider != null)
+        {
+            cylinderCollider.enabled = true;
+        }
+        Destroy(arrowInstance);
+
+        Destroy(clone);
     }
 }
