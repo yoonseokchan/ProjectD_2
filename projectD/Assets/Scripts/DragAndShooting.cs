@@ -11,8 +11,8 @@ public class DragAndShooting : MonoBehaviour
     private GameObject clone;
     private GameObject arrowInstance;
 
-    public float throwForce = 100.0f;
-    public float maxDragDistance = 15.0f;
+    public float throwForce = 50.0f;
+    public float maxDragDistance = 30.0f;
     public GameObject draggablePrefab;
     public GameObject arrowPrefab;
 
@@ -32,6 +32,7 @@ public class DragAndShooting : MonoBehaviour
         if (isDragging)
         {
             UpdateDrag();
+            UpdateArrow();
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -56,7 +57,7 @@ public class DragAndShooting : MonoBehaviour
                 rb.isKinematic = true;
 
                 Collider cylinderCollider = GetComponent<Collider>();
-                if(cylinderCollider != null)
+                if (cylinderCollider != null)
                 {
                     cylinderCollider.enabled = false;
                 }
@@ -70,7 +71,12 @@ public class DragAndShooting : MonoBehaviour
                     cloneCollider.enabled = false;
                 }
 
-                arrowInstance = Instantiate(arrowPrefab, clone.transform.position, Quaternion.identity);
+                // 드래그하는 방향의 반대 방향을 계산
+                Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
+
+                // 화살의 방향을 설정하고 나서 x축과 z축의 회전값을 고정
+                arrowInstance = Instantiate(arrowPrefab, clone.transform.position, Quaternion.LookRotation(Vector3.down, dragDirection));
+                arrowInstance.transform.rotation = Quaternion.Euler(-90f, 0f, -90f);
 
             }
         }
@@ -112,7 +118,7 @@ public class DragAndShooting : MonoBehaviour
         transform.position = dragStartPosition;
 
         Collider cylinderCollider = GetComponent<Collider>();
-        if(cylinderCollider != null)
+        if (cylinderCollider != null)
         {
             cylinderCollider.enabled = true;
         }
