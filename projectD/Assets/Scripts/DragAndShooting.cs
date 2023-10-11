@@ -42,6 +42,11 @@ public class DragAndShooting : MonoBehaviour
                 ThrowObject();
             }
         }
+
+        if (isDragging && Input.GetMouseButtonDown(1))
+        {
+            CancelDrag();
+        }
     }
 
     void StartDragging()
@@ -80,6 +85,23 @@ public class DragAndShooting : MonoBehaviour
 
             }
         }
+    }
+
+    void CancelDrag()
+    {
+        isDragging = false;
+        rb.isKinematic = false;
+
+        Collider cylinderCollider = GetComponent<Collider>();
+        if (cylinderCollider != null)
+        {
+            cylinderCollider.enabled = true;
+        }
+
+        transform.position = dragStartPosition;
+
+        Destroy(arrowInstance);
+        Destroy(clone);
     }
 
     void UpdateDrag()
