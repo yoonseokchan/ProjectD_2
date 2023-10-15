@@ -70,11 +70,16 @@ public class DragAndShooting : MonoBehaviour
                 dragStartPosition = transform.position;
 
                 clone = Instantiate(draggablePrefab, dragStartPosition, Quaternion.identity);
+                clone.transform.rotation = Quaternion.Euler(0f, 0f, 0f); // 누워 있는 상태로 나오지 않도록 수정
+
                 Collider cloneCollider = clone.GetComponent<Collider>();
                 if (cloneCollider != null)
                 {
                     cloneCollider.enabled = false;
                 }
+
+                // 드래그 시작할 때만 정면을 보도록 수정
+                clone.transform.forward = mainCamera.transform.forward;
 
                 // 드래그하는 방향의 반대 방향을 계산
                 Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
@@ -114,6 +119,25 @@ public class DragAndShooting : MonoBehaviour
         {
             Vector3 newPosition = ray.GetPoint(distanceToPlane);
             transform.position = newPosition;
+
+            // 클론 오브젝트를 드래그 시작 위치에 고정
+            if (clone != null)
+            {
+                clone.transform.position = dragStartPosition;
+
+                // 클론 오브젝트가 마우스 방향을 따라 같이 회전
+                Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
+
+                // y축 회전값을 기준으로 돌도록 수정
+                float angle = Mathf.Atan2(dragDirection.x, dragDirection.z) * Mathf.Rad2Deg;
+                Quaternion newRotation = Quaternion.Euler(0, angle, 0);
+
+                // 현재 클론 오브젝트의 회전값을 유지한 채로 새로운 회전값으로 Lerp
+                clone.transform.rotation = Quaternion.Lerp(clone.transform.rotation, newRotation, Time.deltaTime * 10f);
+
+                // 원래 오브젝트도 같이 회전
+                transform.rotation = clone.transform.rotation;
+            }
         }
     }
 
@@ -136,6 +160,9 @@ public class DragAndShooting : MonoBehaviour
 
         Vector3 throwDirection = (dragStartPosition - transform.position).normalized;
         rb.velocity = throwDirection * throwForceMagnitude;
+
+        // 바로 보는 방향을 유지
+        transform.forward = throwDirection;
 
         transform.position = dragStartPosition;
 
