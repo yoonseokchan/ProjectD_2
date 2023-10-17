@@ -9,7 +9,7 @@ public class A_Destroy : MonoBehaviour
 
     public void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.name == "GameObject A")
+        if (col.gameObject.name == "P1C1")
         {
             Vector3 BCPosition = col.contacts[0].point;
             Destroy(gameObject); // 자기자신 삭제
