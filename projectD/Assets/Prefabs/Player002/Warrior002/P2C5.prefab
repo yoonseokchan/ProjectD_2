@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1585171545066387919}
   - component: {fileID: 1585171545066387906}
   - component: {fileID: 1585171545066387917}
+  - component: {fileID: -4927908869961002751}
   m_Layer: 6
   m_Name: P2C5
   m_TagString: Player
@@ -136,6 +137,23 @@ MonoBehaviour:
   height: 2
   boxCount: 10
   orientation: 1
+--- !u!114 &-4927908869961002751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585171545066387911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21b1376977375c84187303a147f6e4af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwForce: 50
+  maxDragDistance: 30
+  draggablePrefab: {fileID: 1045514839023084255, guid: 17b831224d411ef4f97241f73e345e9c, type: 3}
+  arrowPrefab: {fileID: 7354846484916664082, guid: 60643a06312ae6b42ba9e2df629a6d93, type: 3}
+  MargePrefab: {fileID: 1585171545066387911, guid: 603da8b5ac1928443a128659cd77e70c, type: 3}
 --- !u!1001 &3132180772264314288
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -4,66 +4,72 @@ using UnityEngine;
 
 public class OnTrigger : MonoBehaviour
 {
-    public GameObject MargePrefab;  // 인스펙터에서 할당할 변수
+    private Rigidbody rb;
+    private Transform player;
 
-    private List<Transform> spawnPoints = new List<Transform>();
-    private int spawnIndex = 0;
-
-    void Start()
+    private void Start()
     {
-        // SpawnPointGroup 게임오브젝트의 Transform 컴포넌트 추출
-        Transform spawnPointGroup = GameObject.Find("SpawnPointGroup")?.transform;
-
-        if (spawnPointGroup != null)
-        {
-            // SpawnPointGroup 하위에 있는 모든 차일드 게임오브젝트의 Transform 컴포넌트 추출
-            foreach (Transform point in spawnPointGroup)
-            {
-                spawnPoints.Add(point);
-            }
-        }
-        else
-        {
-            Debug.LogError("SpawnPointGroup not found!");
-        }
+        rb = GetComponent<Rigidbody>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // 플레이어가 트리거를 통과한 경우
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Player triggered!");
+            Debug.Log("플레이어가 트리거에 닿았어요!");
 
-            // 트리거의 Collider를 비활성화
-            GetComponent<Collider>().enabled = false;
+            player = other.transform;
+            DragAndShooting dragAndShootingScript = player.GetComponent<DragAndShooting>();
 
-            // 플레이어의 Marge 오브젝트 생성 및 연결
-            SpawnMarge(other.transform);
+            if (dragAndShootingScript != null)
+            {
+                GameObject margePrefab = dragAndShootingScript.MargePrefab;
+
+                if (margePrefab != null)
+                {
+                    // Marge 프리팹 생성
+                    SpawnMarge(margePrefab);
+
+                    // 플레이어 오브젝트 비활성화
+                    other.gameObject.SetActive(false);
+                }
+                else
+                {
+                    Debug.LogError("DragAndShooting 스크립트에서 Marge 프리팹이 설정되지 않았어요!");
+                }
+            }
+            else
+            {
+                Debug.LogError("DragAndShooting 스크립트를 찾을 수 없습니다! " + player.name);
+            }
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void SpawnMarge(GameObject margePrefab)
     {
-        // 플레이어가 트리거를 빠져나가면 트리거를 다시 활성화
-        if (other.CompareTag("Player"))
+        // 게임 매니저에 접근
+        GameManager gameManager = FindObjectOfType<GameManager>();
+        if (gameManager != null)
         {
-            // 트리거의 Collider를 활성화
-            GetComponent<Collider>().enabled = true;
+            // 스폰 포인트 그룹에서 다음 스폰 위치 가져오기
+            Vector3 spawnPosition = gameManager.GetNextSpawnPoint();
+
+            // Marge 프리팹 생성 및 위치 설정
+            GameObject marge = Instantiate(margePrefab, spawnPosition, Quaternion.identity);
+
+            // Rigidbody 컴포넌트 활성화
+            Rigidbody margeRigidbody = marge.GetComponent<Rigidbody>();
+            if (margeRigidbody != null)
+            {
+                margeRigidbody.isKinematic = true;
+            }
+
+            // 게임 매니저에 Marge 추가
+            gameManager.AddSpawnedMargeToList(marge);
         }
-    }
-
-    void SpawnMarge(Transform playerTransform)
-    {
-        // 플레이어 위치에 Marge 오브젝트 생성 및 연결
-        GameObject marge = Instantiate(MargePrefab, playerTransform.position, playerTransform.rotation);
-        marge.transform.parent = playerTransform;
-    }
-
-    Vector3 GetNextSpawnPoint()
-    {
-        int currentIndex = spawnIndex % spawnPoints.Count;
-        spawnIndex++;
-        return spawnPoints[currentIndex].position;
+        else
+        {
+            Debug.LogError("게임 매니저를 찾을 수 없어요!");
+        }
     }
 }
