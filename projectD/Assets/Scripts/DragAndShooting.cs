@@ -10,11 +10,14 @@ public class DragAndShooting : MonoBehaviour
     private Vector3 dragStartPosition;
     private GameObject clone;
     private GameObject arrowInstance;
+    private Vector3 throwForceDirection;
 
     public float throwForce = 50.0f;
     public float maxDragDistance = 30.0f;
+
     public GameObject draggablePrefab;
     public GameObject arrowPrefab;
+    public GameObject MargePrefab;
 
     void Start()
     {
@@ -50,7 +53,10 @@ public class DragAndShooting : MonoBehaviour
     }
 
     void StartDragging()
+{
+    try
     {
+        // 기존 코드
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -70,22 +76,30 @@ public class DragAndShooting : MonoBehaviour
                 dragStartPosition = transform.position;
 
                 clone = Instantiate(draggablePrefab, dragStartPosition, Quaternion.identity);
+                clone.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+
                 Collider cloneCollider = clone.GetComponent<Collider>();
                 if (cloneCollider != null)
                 {
                     cloneCollider.enabled = false;
                 }
 
-                // 드래그하는 방향의 반대 방향을 계산
+                clone.transform.forward = mainCamera.transform.forward;
+
                 Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
 
-                // 화살의 방향을 설정하고 나서 x축과 z축의 회전값을 고정
                 arrowInstance = Instantiate(arrowPrefab, clone.transform.position, Quaternion.LookRotation(Vector3.down, dragDirection));
                 arrowInstance.transform.rotation = Quaternion.Euler(-90f, 0f, -90f);
-
             }
         }
     }
+    catch (System.Exception ex)
+    {
+        Debug.LogError("Exception in StartDragging: " + ex.Message);
+        throw; // 예외를 다시 던져서 콘솔에 더 자세한 정보를 출력하도록 함
+    }
+}
+
 
     void CancelDrag()
     {
@@ -114,6 +128,25 @@ public class DragAndShooting : MonoBehaviour
         {
             Vector3 newPosition = ray.GetPoint(distanceToPlane);
             transform.position = newPosition;
+
+            // 클론 오브젝트를 드래그 시작 위치에 고정
+            if (clone != null)
+            {
+                clone.transform.position = dragStartPosition;
+
+                // 클론 오브젝트가 마우스 방향을 따라 같이 회전
+                Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
+
+                // y축 회전값을 기준으로 돌도록 수정
+                float angle = Mathf.Atan2(dragDirection.x, dragDirection.z) * Mathf.Rad2Deg;
+                Quaternion newRotation = Quaternion.Euler(0, angle, 0);
+
+                // 현재 클론 오브젝트의 회전값을 유지한 채로 새로운 회전값으로 Lerp
+                clone.transform.rotation = Quaternion.Lerp(clone.transform.rotation, newRotation, Time.deltaTime * 10f);
+
+                // 원래 오브젝트도 같이 회전
+                transform.rotation = clone.transform.rotation;
+            }
         }
     }
 
@@ -137,6 +170,9 @@ public class DragAndShooting : MonoBehaviour
         Vector3 throwDirection = (dragStartPosition - transform.position).normalized;
         rb.velocity = throwDirection * throwForceMagnitude;
 
+        // 바로 보는 방향을 유지
+        transform.forward = throwDirection;
+
         transform.position = dragStartPosition;
 
         Collider cylinderCollider = GetComponent<Collider>();
@@ -147,5 +183,19 @@ public class DragAndShooting : MonoBehaviour
         Destroy(arrowInstance);
 
         Destroy(clone);
+
+        // 던진 방향과 힘을 저장
+        throwForceDirection = (dragStartPosition - transform.position).normalized;
+        float throwDistance = Vector3.Distance(dragStartPosition, transform.position);
+        float throwMagnitude = Mathf.Lerp(0f, throwForce, throwDistance / maxDragDistance);
+        Vector3 throwDir = throwForceDirection * throwMagnitude;
+
+        // 다른 스크립트에 힘을 전달
+        PushObjects pushObjectsScript = GetComponent<PushObjects>();
+        if (pushObjectsScript != null)
+        {
+            pushObjectsScript.ApplyPushForce(throwDir);
+        }
+
     }
 }
