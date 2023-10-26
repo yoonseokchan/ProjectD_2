@@ -9,11 +9,11 @@ public class A_Destroy : MonoBehaviour
 
     public void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject.name == "GameObject A")
+        if (col.gameObject.name == "P1C1")
         {
             Vector3 BCPosition = col.contacts[0].point;
-            Destroy(gameObject); // ìê¸°ìì‹  ì‚­ì œ
-            Destroy(col.gameObject); // ìƒëŒ€ë°©ì„ ì‚­ì œ
+            Destroy(gameObject); // ÀÚ±âÀÚ½Å »èÁ¦
+            Destroy(col.gameObject); // »ó´ë¹æÀ» »èÁ¦
             Instantiate(B, BCPosition, Quaternion.identity);
         }
     }

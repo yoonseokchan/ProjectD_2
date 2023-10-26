@@ -1,9 +1,7 @@
 using UnityEngine;
 
 public class DragAndDropManager : MonoBehaviour
-{ 
-    public GameObject A;
-    public GameObject B;
+{
     private bool isDragging = false;
     private GameObject draggedObject;
     private Vector3 offset;
@@ -12,16 +10,15 @@ public class DragAndDropManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // ë§ˆìš°ìŠ¤ ì™¼ìª½ ë²„íŠ¼ì„ í´ë¦­í•  ë•Œ
+            // ¸¶¿ì½º ¿ŞÂÊ ¹öÆ°À» Å¬¸¯ÇÒ ¶§
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            //ì»¤ì„œìœ„ì¹˜ì— ë­”ê°€ìˆìœ¼ë©´
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit) && hit.collider != null)
             {
-                if (hit.collider != null)
+                // µå·¡±×ÇÒ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃ (·¹ÀÌ¾î°¡ "Player"ÀÎ °æ¿ì¿¡¸¸)
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
-                    // ë“œë˜ê·¸í•  ì˜¤ë¸Œì íŠ¸ë¥¼ ì„ íƒ
                     draggedObject = hit.collider.gameObject;
                     offset = draggedObject.transform.position - hit.point;
                     isDragging = true;
@@ -31,15 +28,13 @@ public class DragAndDropManager : MonoBehaviour
 
         if (isDragging)
         {
-            // ë§ˆìš°ìŠ¤ë¥¼ ë”°ë¼ ì˜¤ë¸Œì íŠ¸ ì´ë™
-            Vector3 newPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)) + offset;
+            // ¸¶¿ì½º¸¦ µû¶ó ¿ÀºêÁ§Æ® ÀÌµ¿
+            Vector3 newPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 60)) + offset;
             draggedObject.transform.position = newPosition;
-            //ë§ˆìš°ìŠ¤ ë²„íŠ¼ ì—…ì‹œ ê·¸ ìë¦¬ì— ì˜¤ë¸Œì íŠ¸ê°€ ìˆë‹¤ë©´ ë“œë ˆê·¸ì¤‘ì¸ ì˜¤ë¸Œì íŠ¸ í”„ë¦¬í© í˜¸ì¶œí•˜ì—¬ 
-            //ê·¸ ìë¦¬ì— ìˆëŠ” ì˜¤ë¸Œì íŠ¸ í”„ë¦¬í©ê³¼ ëŒ€ì¡°í›„ ê°™ë‹¤ë©´ ë‹¤ìŒ ë‹¨ê³„ì˜ ì˜¤ë¸Œì íŠ¸ ì¶œí˜„ í•˜ëŠ” ì½”ë“œ êµ¬í˜„ í•´ì•¼í•¨
 
             if (Input.GetMouseButtonUp(0))
             {
-                // ë§ˆìš°ìŠ¤ ì™¼ìª½ ë²„íŠ¼ì„ ë†“ì„ ë•Œ
+                // ¸¶¿ì½º ¿ŞÂÊ ¹öÆ°À» ³õÀ» ¶§
                 isDragging = false;
                 draggedObject = null;
             }
