@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 3595225897600577586}
   - component: {fileID: 3595225897600577597}
   - component: {fileID: 469775812441032494}
-  m_Layer: 6
+  - component: {fileID: 5097836792756665521}
+  m_Layer: 8
   m_Name: P2C1
-  m_TagString: Player
+  m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,11 +150,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21b1376977375c84187303a147f6e4af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwForce: 50
+  throwForce: 80
   maxDragDistance: 30
   draggablePrefab: {fileID: 6166703861631968942, guid: a6a92ed5e9a2d7646b32b3eb37df1f24, type: 3}
   arrowPrefab: {fileID: 7354846484916664082, guid: 60643a06312ae6b42ba9e2df629a6d93, type: 3}
   MargePrefab: {fileID: 3595225897600577591, guid: 55990aabbe390d94db6de45e834b4141, type: 3}
+--- !u!114 &5097836792756665521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3595225897600577591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9f90a2b4fae88e43b75978746292a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pushForce: 10
 --- !u!1001 &3600797614042447410
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -223,11 +237,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4401679ee5b6d9442807eeb8620e6e6e, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8164078558771037576, guid: 4401679ee5b6d9442807eeb8620e6e6e, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4401679ee5b6d9442807eeb8620e6e6e, type: 3}

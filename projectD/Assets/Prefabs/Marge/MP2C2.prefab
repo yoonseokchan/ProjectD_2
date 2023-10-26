@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1204912572839829776}
   - component: {fileID: 1204912572839829781}
   - component: {fileID: 6701704092634532981}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: MP2C2
   m_TagString: Marge
   m_Icon: {fileID: 0}
@@ -233,11 +233,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 29541ec5b17103d48975bf869357fe85, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8164078558771037576, guid: 29541ec5b17103d48975bf869357fe85, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29541ec5b17103d48975bf869357fe85, type: 3}
