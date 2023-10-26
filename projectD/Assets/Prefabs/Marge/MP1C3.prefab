@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 351913391498098056}
   m_Layer: 6
   m_Name: MP1C3
-  m_TagString: Player1
+  m_TagString: Marge
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

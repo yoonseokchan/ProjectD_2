@@ -32,6 +32,7 @@ public class OnTrigger : MonoBehaviour
                 {
                     // Marge 橇府普 积己
                     SpawnMarge(margePrefab, "Player1");
+                    Destroy(other.gameObject);
                 }
                 else
                 {
@@ -58,6 +59,7 @@ public class OnTrigger : MonoBehaviour
                 {
                     // Marge 橇府普 积己
                     SpawnMarge(margePrefab, "Player2");
+                    Destroy(other.gameObject);
                 }
                 else
                 {

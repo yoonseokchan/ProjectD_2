@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1585171545066387917}
   - component: {fileID: -4927908869961002751}
   - component: {fileID: 3890791293185903372}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: P2C5
   m_TagString: Player2
   m_Icon: {fileID: 0}
@@ -233,11 +233,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 42d034e3c705d674ca8448dac6954efc, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8164078558771037576, guid: 42d034e3c705d674ca8448dac6954efc, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42d034e3c705d674ca8448dac6954efc, type: 3}
