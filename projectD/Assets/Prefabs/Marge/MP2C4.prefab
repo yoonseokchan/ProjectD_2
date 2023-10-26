@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 9030085760261925709}
   m_Layer: 6
   m_Name: MP2C4
-  m_TagString: Marge
+  m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

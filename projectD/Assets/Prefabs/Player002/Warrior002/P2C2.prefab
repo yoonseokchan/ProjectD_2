@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 1204912572839829791}
   - component: {fileID: 1204912572839829776}
   - component: {fileID: -5770673354628874466}
+  - component: {fileID: -282067215157384755}
   m_Layer: 6
   m_Name: P2C2
-  m_TagString: Player
+  m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,11 +150,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21b1376977375c84187303a147f6e4af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwForce: 50
+  throwForce: 80
   maxDragDistance: 30
   draggablePrefab: {fileID: 1840681753423091708, guid: 85f5076b2d7309440aef37ea9aa236d2, type: 3}
   arrowPrefab: {fileID: 7354846484916664082, guid: 60643a06312ae6b42ba9e2df629a6d93, type: 3}
   MargePrefab: {fileID: 1204912572839829786, guid: f48fdd16c86916242aa021f261399e80, type: 3}
+--- !u!114 &-282067215157384755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204912572839829786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9f90a2b4fae88e43b75978746292a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pushForce: 10
 --- !u!1001 &5302502275877276675
 PrefabInstance:
   m_ObjectHideFlags: 0
