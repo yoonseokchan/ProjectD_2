@@ -18,8 +18,8 @@ public class DragAndShooting : MonoBehaviour
     public GameObject draggablePrefab;
     public GameObject arrowPrefab;
     public GameObject MargePrefab;
-    public string PlayerT;
 
+    float currentYRotation = 0f;
 
     void Start()
     {
@@ -52,18 +52,20 @@ public class DragAndShooting : MonoBehaviour
         {
             CancelDrag();
         }
+
     }
-void StartDragging()
+
+    void StartDragging()
 {
     try
     {
+        // ���� �ڵ�
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        
-        int layerMask = 1<< LayerMask.NameToLayer(PlayerT);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+
+        if (Physics.Raycast(ray, out hit))
         {
-             if (hit.collider != null && hit.collider.gameObject == gameObject)
+            if (hit.collider != null && hit.collider.gameObject == gameObject)
             {
                 isDragging = true;
                 rb.isKinematic = true;
@@ -97,11 +99,9 @@ void StartDragging()
     catch (System.Exception ex)
     {
         Debug.LogError("Exception in StartDragging: " + ex.Message);
-        throw;
+        throw; // ���ܸ� �ٽ� ������ �ֿܼ� �� �ڼ��� ������ ����ϵ��� ��
     }
 }
-
-    
 
 
     void CancelDrag()
@@ -199,6 +199,33 @@ void StartDragging()
         {
             pushObjectsScript.ApplyPushForce(throwDir);
         }
+        // 5�� �Ŀ� CameraRotate �޼��带 ȣ��
+        Invoke("SwitchTurns", 3f);
+    }
 
+
+    void SwitchTurns()
+    {
+        // ���⿡ �� ���� ������ �߰��ϸ� �˴ϴ�.
+        if (mainCamera == null) return;
+
+        // ���� �������� �ݴ������� �̵�
+        Vector3 oppositePosition = new Vector3(-mainCamera.transform.position.x, mainCamera.transform.position.y, -mainCamera.transform.position.z);
+
+        // ���� ī�޶��� ���ʹϾ��� ��������
+        Quaternion currentRotation = mainCamera.transform.rotation;
+
+        // Y�� ȸ�� ������ ���� ���ʹϾ��� ������� ���
+        float newYRotation = currentRotation.eulerAngles.y + 180f;
+
+        // 360���� �Ѿ�� 0���� �ʱ�ȭ
+        if (newYRotation >= 360f)
+        {
+            newYRotation -= 360f;
+        }
+
+        // X���� ���� ������, Y���� ���� ���� ȸ�� ������, Z���� ���� ������ ����
+        mainCamera.transform.rotation = Quaternion.Euler(61f, newYRotation, 0f);
+        mainCamera.transform.position = oppositePosition;
     }
 }

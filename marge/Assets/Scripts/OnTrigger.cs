@@ -32,7 +32,7 @@ public class OnTrigger : MonoBehaviour
                 {
                     // Marge ������ ����
                     SpawnMarge(margePrefab, "Player1");
-                    Destroy (other.gameObject);
+                    Destroy(other.gameObject);
                 }
                 else
                 {
@@ -59,7 +59,7 @@ public class OnTrigger : MonoBehaviour
                 {
                     // Marge ������ ����
                     SpawnMarge(margePrefab, "Player2");
-                    Destroy (other.gameObject);
+                    Destroy(other.gameObject);
                 }
                 else
                 {
@@ -88,7 +88,7 @@ public class OnTrigger : MonoBehaviour
         Rigidbody margeRigidbody = marge.GetComponent<Rigidbody>();
         if (margeRigidbody != null)
         {
-            margeRigidbody.isKinematic = true;
+            margeRigidbody.isKinematic = false;
         }
 
         // ���� �Ŵ����� Marge �߰�

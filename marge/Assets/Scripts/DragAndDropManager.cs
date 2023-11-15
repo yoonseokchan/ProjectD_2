@@ -10,14 +10,83 @@ public class DragAndDropManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // ∏∂øÏΩ∫ øﬁ¬  πˆ∆∞¿ª ≈¨∏Ø«“ ∂ß
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit) && hit.collider != null)
             {
-                // µÂ∑°±◊«“ ø¿∫Í¡ß∆Æ∏¶ º±≈√ (∑π¿ÃæÓ∞° "Player"¿Œ ∞ÊøÏø°∏∏)
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP1C1(Clone)")
+                {
+                    draggedObject = hit.collider.gameObject;
+                    offset = draggedObject.transform.position - hit.point;
+                    isDragging = true;
+                }
+            }
+             if (Physics.Raycast(ray, out hit) && hit.collider != null)
+            {
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP1C2(Clone)")
+                {
+                    draggedObject = hit.collider.gameObject;
+                    offset = draggedObject.transform.position - hit.point;
+                    isDragging = true;
+                }
+            }
+             if (Physics.Raycast(ray, out hit) && hit.collider != null)
+            {
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP1C3(Clone)")
+                {
+                    draggedObject = hit.collider.gameObject;
+                    offset = draggedObject.transform.position - hit.point;
+                    isDragging = true;
+                }
+            }
+             if (Physics.Raycast(ray, out hit) && hit.collider != null)
+            {
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP1C4(Clone)")
+                {
+                    draggedObject = hit.collider.gameObject;
+                    offset = draggedObject.transform.position - hit.point;
+                    isDragging = true;
+                }
+            }
+             if (Physics.Raycast(ray, out hit) && hit.collider != null)
+            {
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP2C1(Clone)")
+                {
+                    draggedObject = hit.collider.gameObject;
+                    offset = draggedObject.transform.position - hit.point;
+                    isDragging = true;
+                }
+            }
+             if (Physics.Raycast(ray, out hit) && hit.collider != null)
+            {
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP2C2(Clone)")
+                {
+                    draggedObject = hit.collider.gameObject;
+                    offset = draggedObject.transform.position - hit.point;
+                    isDragging = true;
+                }
+            }
+             if (Physics.Raycast(ray, out hit) && hit.collider != null)
+            {
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP2C3(Clone)")
+                {
+                    draggedObject = hit.collider.gameObject;
+                    offset = draggedObject.transform.position - hit.point;
+                    isDragging = true;
+                }
+            }
+             if (Physics.Raycast(ray, out hit) && hit.collider != null)
+            {
+                string objectName = hit.collider.gameObject.name;
+                if(objectName =="MP2C4(Clone)")
                 {
                     draggedObject = hit.collider.gameObject;
                     offset = draggedObject.transform.position - hit.point;
@@ -28,15 +97,21 @@ public class DragAndDropManager : MonoBehaviour
 
         if (isDragging)
         {
-            // ∏∂øÏΩ∫∏¶ µ˚∂Û ø¿∫Í¡ß∆Æ ¿Ãµø
-            Vector3 newPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 60)) + offset;
+            // ÔøΩÔøΩÔøΩÏΩ∫ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ∆Æ ÔøΩÃµÔøΩ
+            Vector3 newPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 61)) + offset;
             draggedObject.transform.position = newPosition;
 
             if (Input.GetMouseButtonUp(0))
             {
-                // ∏∂øÏΩ∫ øﬁ¬  πˆ∆∞¿ª ≥ı¿ª ∂ß
+                // ÔøΩÔøΩÔøΩÏΩ∫ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ∆∞ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ
                 isDragging = false;
                 draggedObject = null;
+                // A_Destroy Ïª¥Ìè¨ÎÑåÌä∏Î•º ÎπÑÌôúÏÑ±Ìôî
+                A_Destroy aDestroyComponent = draggedObject.GetComponent<A_Destroy>();
+                if (aDestroyComponent != null)
+                {
+                    aDestroyComponent.enabled = false;
+                }
             }
         }
     }

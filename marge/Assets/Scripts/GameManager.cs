@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public List<Transform> pointsGroup1 = new List<Transform>();  // ÇÃ·¹ÀÌ¾î1ÀÇ ½ºÆù Æ÷ÀÎÆ® ¸®½ºÆ®
-    public List<Transform> pointsGroup2 = new List<Transform>();  // ÇÃ·¹ÀÌ¾î2ÀÇ ½ºÆù Æ÷ÀÎÆ® ¸®½ºÆ®
+    public List<Transform> pointsGroup1 = new List<Transform>();  // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Æ®
+    public List<Transform> pointsGroup2 = new List<Transform>();  // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Æ®
     public List<GameObject> spawnedMarges = new List<GameObject>();
 
-    private List<GameObject> margeList = new List<GameObject>(); // Marge ¿ÀºêÁ§Æ®¸¦ °ü¸®ÇÒ ¸®½ºÆ®
-    private List<Transform> currentPoints; // ÇöÀç »ç¿ë ÁßÀÎ ½ºÆù Æ÷ÀÎÆ® ±×·ì
+    private List<GameObject> margeList = new List<GameObject>(); // Marge ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+    private List<Transform> currentPoints; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½×·ï¿½
 
     // Start is called before the first frame update
     void Start()
     {
-        // ÀÚ½Ä Æ÷ÀÎÆ®µéÀ» ÀÚµ¿À¸·Î µî·Ï
+        // ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         Transform spawnPointGroup1 = GameObject.Find("SpawnPointGroup1")?.transform;
         Transform spawnPointGroup2 = GameObject.Find("SpawnPointGroup2")?.transform;
 
@@ -23,12 +23,12 @@ public class GameManager : MonoBehaviour
             RegisterSpawnPoints(spawnPointGroup1, pointsGroup1);
             RegisterSpawnPoints(spawnPointGroup2, pointsGroup2);
 
-            // ÃÊ±â¿¡´Â Player1ÀÇ ½ºÆù Æ÷ÀÎÆ® ±×·ìÀ» ¼±ÅÃ
+            // ï¿½Ê±â¿¡ï¿½ï¿½ Player1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             currentPoints = pointsGroup1;
         }
         else
         {
-            Debug.LogError("½ºÆù Æ÷ÀÎÆ® ±×·ìÀ» Ã£À» ¼ö ¾ø¾î¿ä!");
+            Debug.LogError("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½×·ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½!");
         }
     }
 
@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("½ºÆù Æ÷ÀÎÆ® ±×·ìÀÌ ¾ø¾î¿ä!");
+            Debug.LogError("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½!");
         }
     }
 
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         spawnedMarges.Add(marge);
     }
 
-    // Marge ¿ÀºêÁ§Æ®¸¦ ¸®½ºÆ®¿¡ Ãß°¡ÇÏ´Â ÇÔ¼ö
+    // Marge ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
     public void AddMargeToList(GameObject marge)
     {
         margeList.Add(marge);
@@ -64,27 +64,5 @@ public class GameManager : MonoBehaviour
         return spawnPoints[currentIndex].position;
     }
 
-    // »õ·Î¿î ½ºÆù ¸Þ¼­µå Ãß°¡
-    public void SpawnMarge(GameObject margePrefab, string playerTag)
-    {
-        // ½ºÆù Æ÷ÀÎÆ® ±×·ì ¼±ÅÃ
-        List<Transform> spawnPoints = (playerTag == "Player1") ? pointsGroup1 : pointsGroup2;
-
-        // ½ºÆù Æ÷ÀÎÆ® ±×·ì¿¡¼­ ´ÙÀ½ ½ºÆù À§Ä¡ °¡Á®¿À±â
-        Vector3 spawnPosition = GetNextSpawnPoint(spawnPoints);
-
-        // Marge ÇÁ¸®ÆÕ »ý¼º ¹× À§Ä¡ ¼³Á¤
-        GameObject marge = Instantiate(margePrefab, spawnPosition, Quaternion.identity);
-
-        // Rigidbody ÄÄÆ÷³ÍÆ® È°¼ºÈ­
-        Rigidbody margeRigidbody = marge.GetComponent<Rigidbody>();
-        if (margeRigidbody != null)
-        {
-            margeRigidbody.isKinematic = true;
-        }
-
-        // °ÔÀÓ ¸Å´ÏÀú¿¡ Marge Ãß°¡
-        AddMargeToList(marge);
-        AddSpawnedMargeToList(marge);
-    }
+    
 }
