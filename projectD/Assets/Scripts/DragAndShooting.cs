@@ -6,6 +6,7 @@ public class DragAndShooting : MonoBehaviour
 {
     private Rigidbody rb;
     private Camera mainCamera;
+
     private bool isDragging = false;
     private Vector3 dragStartPosition;
     private GameObject clone;
@@ -19,12 +20,10 @@ public class DragAndShooting : MonoBehaviour
     public GameObject arrowPrefab;
     public GameObject MargePrefab;
 
-    float currentYRotation = 0f;
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        mainCamera = Camera.main;
+        mainCamera = Camera.main;;
     }
 
     void Update()
@@ -56,53 +55,61 @@ public class DragAndShooting : MonoBehaviour
     }
 
     void StartDragging()
-{
-    try
     {
-        // ±âÁ¸ ÄÚµå
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
+        try
         {
-            if (hit.collider != null && hit.collider.gameObject == gameObject)
+            // ê¸°ì¡´ ì½”ë“œ
+            Camera currentCamera = DetermineCameraToUse(); // ì–´ë–¤ ì¹´ë©”ë¼ë¥¼ ì‚¬ìš©í• ì§€ ê²°ì •
+
+            Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
             {
-                isDragging = true;
-                rb.isKinematic = true;
-
-                Collider cylinderCollider = GetComponent<Collider>();
-                if (cylinderCollider != null)
+                if (hit.collider != null && (hit.collider.gameObject == gameObject || hit.collider.gameObject == currentCamera.gameObject))
                 {
-                    cylinderCollider.enabled = false;
+                    isDragging = true;
+                    rb.isKinematic = true;
+
+                    Collider cylinderCollider = GetComponent<Collider>();
+                    if (cylinderCollider != null)
+                    {
+                        cylinderCollider.enabled = false;
+                    }
+
+                    dragStartPosition = transform.position;
+
+                    clone = Instantiate(draggablePrefab, dragStartPosition, Quaternion.identity);
+                    clone.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+
+                    Collider cloneCollider = clone.GetComponent<Collider>();
+                    if (cloneCollider != null)
+                    {
+                        cloneCollider.enabled = false;
+                    }
+
+                    clone.transform.forward = currentCamera.transform.forward;
+
+                    Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
+
+                    arrowInstance = Instantiate(arrowPrefab, clone.transform.position, Quaternion.LookRotation(Vector3.down, dragDirection));
+                    arrowInstance.transform.rotation = Quaternion.Euler(-90f, 0f, -90f);
                 }
-
-                dragStartPosition = transform.position;
-
-                clone = Instantiate(draggablePrefab, dragStartPosition, Quaternion.identity);
-                clone.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-
-                Collider cloneCollider = clone.GetComponent<Collider>();
-                if (cloneCollider != null)
-                {
-                    cloneCollider.enabled = false;
-                }
-
-                clone.transform.forward = mainCamera.transform.forward;
-
-                Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
-
-                arrowInstance = Instantiate(arrowPrefab, clone.transform.position, Quaternion.LookRotation(Vector3.down, dragDirection));
-                arrowInstance.transform.rotation = Quaternion.Euler(-90f, 0f, -90f);
             }
         }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("Exception in StartDragging: " + ex.Message);
+            throw; // ì˜ˆì™¸ë¥¼ ë‹¤ì‹œ ë˜ì ¸ì„œ ì½˜ì†”ì— ë” ìì„¸í•œ ì •ë³´ë¥¼ ì¶œë ¥í•˜ë„ë¡ í•¨
+        }
     }
-    catch (System.Exception ex)
-    {
-        Debug.LogError("Exception in StartDragging: " + ex.Message);
-        throw; // ¿¹¿Ü¸¦ ´Ù½Ã ´øÁ®¼­ ÄÜ¼Ö¿¡ ´õ ÀÚ¼¼ÇÑ Á¤º¸¸¦ Ãâ·ÂÇÏµµ·Ï ÇÔ
-    }
-}
 
+    Camera DetermineCameraToUse()
+    {
+        // ì–´ë–¤ ì¹´ë©”ë¼ë¥¼ ì‚¬ìš©í• ì§€ ê²°ì •í•˜ëŠ” ë¡œì§ì„ ì¶”ê°€
+        // ì—¬ê¸°ì—ì„œëŠ” ê°„ë‹¨í•˜ê²Œ ë©”ì¸ ì¹´ë©”ë¼ë¥¼ ì‚¬ìš©í•˜ë„ë¡ í•˜ê² ìŠµë‹ˆë‹¤.
+        return Camera.main;
+    }
 
     void CancelDrag()
     {
@@ -132,22 +139,22 @@ public class DragAndShooting : MonoBehaviour
             Vector3 newPosition = ray.GetPoint(distanceToPlane);
             transform.position = newPosition;
 
-            // Å¬·Ğ ¿ÀºêÁ§Æ®¸¦ µå·¡±× ½ÃÀÛ À§Ä¡¿¡ °íÁ¤
+            // í´ë¡  ì˜¤ë¸Œì íŠ¸ë¥¼ ë“œë˜ê·¸ ì‹œì‘ ìœ„ì¹˜ì— ê³ ì •
             if (clone != null)
             {
                 clone.transform.position = dragStartPosition;
 
-                // Å¬·Ğ ¿ÀºêÁ§Æ®°¡ ¸¶¿ì½º ¹æÇâÀ» µû¶ó °°ÀÌ È¸Àü
+                // í´ë¡  ì˜¤ë¸Œì íŠ¸ê°€ ë§ˆìš°ìŠ¤ ë°©í–¥ì„ ë”°ë¼ ê°™ì´ íšŒì „
                 Vector3 dragDirection = (dragStartPosition - transform.position).normalized;
 
-                // yÃà È¸Àü°ªÀ» ±âÁØÀ¸·Î µ¹µµ·Ï ¼öÁ¤
+                // yì¶• íšŒì „ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ ëŒë„ë¡ ìˆ˜ì •
                 float angle = Mathf.Atan2(dragDirection.x, dragDirection.z) * Mathf.Rad2Deg;
                 Quaternion newRotation = Quaternion.Euler(0, angle, 0);
 
-                // ÇöÀç Å¬·Ğ ¿ÀºêÁ§Æ®ÀÇ È¸Àü°ªÀ» À¯ÁöÇÑ Ã¤·Î »õ·Î¿î È¸Àü°ªÀ¸·Î Lerp
+                // í˜„ì¬ í´ë¡  ì˜¤ë¸Œì íŠ¸ì˜ íšŒì „ê°’ì„ ìœ ì§€í•œ ì±„ë¡œ ìƒˆë¡œìš´ íšŒì „ê°’ìœ¼ë¡œ Lerp
                 clone.transform.rotation = Quaternion.Lerp(clone.transform.rotation, newRotation, Time.deltaTime * 10f);
 
-                // ¿ø·¡ ¿ÀºêÁ§Æ®µµ °°ÀÌ È¸Àü
+                // ì›ë˜ ì˜¤ë¸Œì íŠ¸ë„ ê°™ì´ íšŒì „
                 transform.rotation = clone.transform.rotation;
             }
         }
@@ -173,7 +180,7 @@ public class DragAndShooting : MonoBehaviour
         Vector3 throwDirection = (dragStartPosition - transform.position).normalized;
         rb.velocity = throwDirection * throwForceMagnitude;
 
-        // ¹Ù·Î º¸´Â ¹æÇâÀ» À¯Áö
+        // ë°”ë¡œ ë³´ëŠ” ë°©í–¥ì„ ìœ ì§€
         transform.forward = throwDirection;
 
         transform.position = dragStartPosition;
@@ -187,46 +194,46 @@ public class DragAndShooting : MonoBehaviour
 
         Destroy(clone);
 
-        // ´øÁø ¹æÇâ°ú ÈûÀ» ÀúÀå
+        // ë˜ì§„ ë°©í–¥ê³¼ í˜ì„ ì €ì¥
         throwForceDirection = (dragStartPosition - transform.position).normalized;
         float throwDistance = Vector3.Distance(dragStartPosition, transform.position);
         float throwMagnitude = Mathf.Lerp(0f, throwForce, throwDistance / maxDragDistance);
         Vector3 throwDir = throwForceDirection * throwMagnitude;
 
-        // ´Ù¸¥ ½ºÅ©¸³Æ®¿¡ ÈûÀ» Àü´Ş
+        // ë‹¤ë¥¸ ìŠ¤í¬ë¦½íŠ¸ì— í˜ì„ ì „ë‹¬
         PushObjects pushObjectsScript = GetComponent<PushObjects>();
         if (pushObjectsScript != null)
         {
             pushObjectsScript.ApplyPushForce(throwDir);
         }
-        // 5ÃÊ ÈÄ¿¡ CameraRotate ¸Ş¼­µå¸¦ È£Ãâ
-        Invoke("SwitchTurn", 3f);
+        // 5ì´ˆ í›„ì— CameraRotate ë©”ì„œë“œë¥¼ í˜¸ì¶œ
+        Invoke("SwitchTurns", 3f);
     }
 
     public delegate void SwitchTurnEvent();
     public static event SwitchTurnEvent OnSwitchTurn;
 
-    void SwitchTurn()
+    void SwitchTurns()
     {
-        // ¿©±â¿¡ ÅÏ º¯°æ ·ÎÁ÷À» Ãß°¡ÇÏ¸é µË´Ï´Ù.
+        // ì—¬ê¸°ì— í„´ ë³€ê²½ ë¡œì§ì„ ì¶”ê°€í•˜ë©´ ë©ë‹ˆë‹¤.
         if (mainCamera == null) return;
 
-        // ÇöÀç Æ÷Áö¼ÇÀÇ ¹İ´ëÂÊÀ¸·Î ÀÌµ¿
+        // í˜„ì¬ í¬ì§€ì…˜ì˜ ë°˜ëŒ€ìª½ìœ¼ë¡œ ì´ë™
         Vector3 oppositePosition = new Vector3(-mainCamera.transform.position.x, mainCamera.transform.position.y, -mainCamera.transform.position.z);
 
-        // ÇöÀç Ä«¸Ş¶óÀÇ ÄõÅÍ´Ï¾ğÀ» °¡Á®¿À±â
+        // í˜„ì¬ ì¹´ë©”ë¼ì˜ ì¿¼í„°ë‹ˆì–¸ì„ ê°€ì ¸ì˜¤ê¸°
         Quaternion currentRotation = mainCamera.transform.rotation;
 
-        // YÃà È¸Àü °¢µµ¸¦ ÇöÀç ÄõÅÍ´Ï¾ğÀ» ±â¹İÀ¸·Î °è»ê
+        // Yì¶• íšŒì „ ê°ë„ë¥¼ í˜„ì¬ ì¿¼í„°ë‹ˆì–¸ì„ ê¸°ë°˜ìœ¼ë¡œ ê³„ì‚°
         float newYRotation = currentRotation.eulerAngles.y + 180f;
 
-        // 360µµ¸¦ ³Ñ¾î°¡¸é 0À¸·Î ÃÊ±âÈ­
+        // 360ë„ë¥¼ ë„˜ì–´ê°€ë©´ 0ìœ¼ë¡œ ì´ˆê¸°í™”
         if (newYRotation >= 360f)
         {
             newYRotation -= 360f;
         }
 
-        // XÃàÀº ÇöÀç °¢µµ·Î, YÃàÀº »õ·Î °è»êµÈ È¸Àü °¢µµ·Î, ZÃàÀº ÇöÀç °¢µµ·Î ¼³Á¤
+        // Xì¶•ì€ í˜„ì¬ ê°ë„ë¡œ, Yì¶•ì€ ìƒˆë¡œ ê³„ì‚°ëœ íšŒì „ ê°ë„ë¡œ, Zì¶•ì€ í˜„ì¬ ê°ë„ë¡œ ì„¤ì •
         mainCamera.transform.rotation = Quaternion.Euler(40f, newYRotation, 0f);
         mainCamera.transform.position = oppositePosition;
 

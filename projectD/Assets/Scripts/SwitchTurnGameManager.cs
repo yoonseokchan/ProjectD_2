@@ -1,87 +1,86 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SwitchTurnGameManager : MonoBehaviour
 {
-    private float turnTimer = 30f; // ÅÏ Å¸ÀÌ¸Ó
-    private float timer; // °æ°ú ½Ã°£ ÀúÀå
+    private float turnTimer = 30f; // í„´ íƒ€ì´ë¨¸
+    private float timer; // ê²½ê³¼ ì‹œê°„ ì €ì¥
 
     private Camera mainCamera;
-    private Animator timerAnimator; // Å¸ÀÌ¸ÓÀÇ ¾Ö´Ï¸ŞÀÌÅÍ ÄÄÆ÷³ÍÆ®
+    public TextMeshProUGUI timerText; // TextMeshProUGUIë¥¼ ì‚¬ìš©í•˜ëŠ” UI í…ìŠ¤íŠ¸ ìš”ì†Œ
+    private Animator timerAnimator; // íƒ€ì´ë¨¸ì˜ ì• ë‹ˆë©”ì´í„° ì»´í¬ë„ŒíŠ¸
 
     void Start()
     {
-        // Start¿¡¼­ mainCamera ¹× timerAnimator ÃÊ±âÈ­
+        // Startì—ì„œ mainCamera ë° timerAnimator ì´ˆê¸°í™”
         mainCamera = Camera.main;
         timerAnimator = GetComponent<Animator>();
 
-        // OnSwitchTurn ÀÌº¥Æ®¿¡ ResetTimerAndAnimation ¸Ş¼­µå¸¦ ±¸µ¶
+        // OnSwitchTurn ì´ë²¤íŠ¸ì— ResetTimerAndAnimation ë©”ì„œë“œë¥¼ êµ¬ë…
         DragAndShooting.OnSwitchTurn += ResetTimerAndAnimation;
     }
 
     void Update()
     {
-        // °æ°ú ½Ã°£À» ´©Àû
+        // ê²½ê³¼ ì‹œê°„ì„ ëˆ„ì 
         timer += Time.deltaTime;
 
-        // 30ÃÊ°¡ Áö³ª¸é ÅÏ ÀüÈ¯
+        // 30ì´ˆê°€ ì§€ë‚˜ë©´ í„´ ì „í™˜
         if (timer >= turnTimer)
         {
             SwitchTurns();
-            // Å¸ÀÌ¸Ó ÃÊ±âÈ­
+            // íƒ€ì´ë¨¸ ì´ˆê¸°í™”
             timer = 0f;
         }
-        Debug.Log("Animator State: " + timerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Time"));
+        // UI í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+        UpdateTimerText();
+    }
+
+    void UpdateTimerText()
+    {
+        timerText.text = (turnTimer - timer).ToString("F1");
     }
 
     void SwitchTurns()
     {
-        // ¿©±â¿¡ ÅÏ º¯°æ ·ÎÁ÷À» Ãß°¡ÇÏ¸é µË´Ï´Ù.
+        // ì—¬ê¸°ì— í„´ ë³€ê²½ ë¡œì§ì„ ì¶”ê°€í•˜ë©´ ë©ë‹ˆë‹¤.
         if (mainCamera == null) return;
 
-        // ÇöÀç Æ÷Áö¼ÇÀÇ ¹İ´ëÂÊÀ¸·Î ÀÌµ¿
+        // í˜„ì¬ í¬ì§€ì…˜ì˜ ë°˜ëŒ€ìª½ìœ¼ë¡œ ì´ë™
         Vector3 oppositePosition = new Vector3(-mainCamera.transform.position.x, mainCamera.transform.position.y, -mainCamera.transform.position.z);
 
-        // ÇöÀç Ä«¸Ş¶óÀÇ ÄõÅÍ´Ï¾ğÀ» °¡Á®¿À±â
+        // í˜„ì¬ ì¹´ë©”ë¼ì˜ ì¿¼í„°ë‹ˆì–¸ì„ ê°€ì ¸ì˜¤ê¸°
         Quaternion currentRotation = mainCamera.transform.rotation;
 
-        // YÃà È¸Àü °¢µµ¸¦ ÇöÀç ÄõÅÍ´Ï¾ğÀ» ±â¹İÀ¸·Î °è»ê
+        // Yì¶• íšŒì „ ê°ë„ë¥¼ í˜„ì¬ ì¿¼í„°ë‹ˆì–¸ì„ ê¸°ë°˜ìœ¼ë¡œ ê³„ì‚°
         float newYRotation = currentRotation.eulerAngles.y + 180f;
 
-        // 360µµ¸¦ ³Ñ¾î°¡¸é 0À¸·Î ÃÊ±âÈ­
+        // 360ë„ë¥¼ ë„˜ì–´ê°€ë©´ 0ìœ¼ë¡œ ì´ˆê¸°í™”
         if (newYRotation >= 360f)
         {
             newYRotation -= 360f;
         }
 
-        // XÃàÀº ÇöÀç °¢µµ·Î, YÃàÀº »õ·Î °è»êµÈ È¸Àü °¢µµ·Î, ZÃàÀº ÇöÀç °¢µµ·Î ¼³Á¤
+        // Xì¶•ì€ í˜„ì¬ ê°ë„ë¡œ, Yì¶•ì€ ìƒˆë¡œ ê³„ì‚°ëœ íšŒì „ ê°ë„ë¡œ, Zì¶•ì€ í˜„ì¬ ê°ë„ë¡œ ì„¤ì •
         mainCamera.transform.rotation = Quaternion.Euler(40f, newYRotation, 0f);
         mainCamera.transform.position = oppositePosition;
+
+        // íƒ€ì´ë¨¸ ì´ˆê¸°í™”
+        timer = 0f;
+        // UI í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+        UpdateTimerText();
     }
 
     public void ResetTimerAndAnimation()
     {
-        // Å¸ÀÌ¸Ó ÃÊ±âÈ­
+        // íƒ€ì´ë¨¸ ì´ˆê¸°í™”
         timer = 0f;
 
-        // µô·¹ÀÌ ÈÄ ¾Ö´Ï¸ŞÀÌ¼Ç ÃÊ±âÈ­
-        StartCoroutine(PlayAnimationAfterDelay("Time", 0f));
     }
 
-    private IEnumerator PlayAnimationAfterDelay(string animationName, float delay)
-    {
-        // µô·¹ÀÌ
-        yield return new WaitForSeconds(delay);
-
-        // ¾Ö´Ï¸ŞÀÌ¼Ç ÃÊ±âÈ­
-        if (timerAnimator != null)
-        {
-            timerAnimator.Play(animationName);
-        }
-    }
-
-    // OnSwitchTurn ÀÌº¥Æ®¿¡ ´ëÇÑ ¾ğ ±¸µ¶
+    // OnSwitchTurn ì´ë²¤íŠ¸ì— ëŒ€í•œ ì–¸ êµ¬ë…
     private void OnDisable()
     {
         DragAndShooting.OnSwitchTurn -= ResetTimerAndAnimation;
