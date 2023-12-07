@@ -1,88 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.Playables;
+using Cinemachine;
 
 public class SwitchTurnGameManager : MonoBehaviour
 {
-    private float turnTimer = 30f; // 턴 타이머
-    private float timer; // 경과 시간 저장
+    public CinemachineVirtualCamera player1Camera;
+    public CinemachineVirtualCamera player2Camera;
+    public Canvas player1Canvas;
+    public Canvas player2Canvas;
 
-    private Camera mainCamera;
-    public TextMeshProUGUI timerText; // TextMeshProUGUI를 사용하는 UI 텍스트 요소
-    private Animator timerAnimator; // 타이머의 애니메이터 컴포넌트
+    private bool isPlayer1Turn = true;
 
     void Start()
     {
-        // Start에서 mainCamera 및 timerAnimator 초기화
-        mainCamera = Camera.main;
-        timerAnimator = GetComponent<Animator>();
-
-        // OnSwitchTurn 이벤트에 ResetTimerAndAnimation 메서드를 구독
-        DragAndShooting.OnSwitchTurn += ResetTimerAndAnimation;
+        InvokeRepeating("SwitchPlayerTurn", 30f, 30f); // 5초마다 SwitchPlayerTurn 호출
     }
 
-    void Update()
+    public void SwitchPlayerTurn()
     {
-        // 경과 시간을 누적
-        timer += Time.deltaTime;
+        isPlayer1Turn = !isPlayer1Turn;
 
-        // 30초가 지나면 턴 전환
-        if (timer >= turnTimer)
+        // 시네머신 가상 카메라 전환
+        if (isPlayer1Turn)
         {
-            SwitchTurns();
-            // 타이머 초기화
-            timer = 0f;
+            player1Camera.Priority = 1;
+            player2Camera.Priority = 0;
+            player1Canvas.gameObject.SetActive(true);
+            player2Canvas.gameObject.SetActive(false);
         }
-        // UI 텍스트 업데이트
-        UpdateTimerText();
-    }
-
-    void UpdateTimerText()
-    {
-        timerText.text = (turnTimer - timer).ToString("F1");
-    }
-
-    void SwitchTurns()
-    {
-        // 여기에 턴 변경 로직을 추가하면 됩니다.
-        if (mainCamera == null) return;
-
-        // 현재 포지션의 반대쪽으로 이동
-        Vector3 oppositePosition = new Vector3(-mainCamera.transform.position.x, mainCamera.transform.position.y, -mainCamera.transform.position.z);
-
-        // 현재 카메라의 쿼터니언을 가져오기
-        Quaternion currentRotation = mainCamera.transform.rotation;
-
-        // Y축 회전 각도를 현재 쿼터니언을 기반으로 계산
-        float newYRotation = currentRotation.eulerAngles.y + 180f;
-
-        // 360도를 넘어가면 0으로 초기화
-        if (newYRotation >= 360f)
+        else
         {
-            newYRotation -= 360f;
+            player1Camera.Priority = 0;
+            player2Camera.Priority = 1;
+            player1Canvas.gameObject.SetActive(false);
+            player2Canvas.gameObject.SetActive(true);
         }
 
-        // X축은 현재 각도로, Y축은 새로 계산된 회전 각도로, Z축은 현재 각도로 설정
-        mainCamera.transform.rotation = Quaternion.Euler(40f, newYRotation, 0f);
-        mainCamera.transform.position = oppositePosition;
-
-        // 타이머 초기화
-        timer = 0f;
-        // UI 텍스트 업데이트
-        UpdateTimerText();
-    }
-
-    public void ResetTimerAndAnimation()
-    {
-        // 타이머 초기화
-        timer = 0f;
-
-    }
-
-    // OnSwitchTurn 이벤트에 대한 언 구독
-    private void OnDisable()
-    {
-        DragAndShooting.OnSwitchTurn -= ResetTimerAndAnimation;
+        // 추가적으로 필요한 로직이 있다면 여기에 추가하세요.
     }
 }

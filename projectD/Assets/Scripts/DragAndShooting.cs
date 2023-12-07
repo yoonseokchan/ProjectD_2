@@ -23,7 +23,6 @@ public class DragAndShooting : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        mainCamera = Camera.main;;
     }
 
     void Update()
@@ -54,12 +53,12 @@ public class DragAndShooting : MonoBehaviour
 
     }
 
+
     void StartDragging()
     {
         try
         {
-            // 기존 코드
-            Camera currentCamera = DetermineCameraToUse(); // 어떤 카메라를 사용할지 결정
+            Camera currentCamera = DetermineCameraToUse();
 
             Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -100,14 +99,22 @@ public class DragAndShooting : MonoBehaviour
         catch (System.Exception ex)
         {
             Debug.LogError("Exception in StartDragging: " + ex.Message);
-            throw; // 예외를 다시 던져서 콘솔에 더 자세한 정보를 출력하도록 함
+            throw;
         }
     }
 
     Camera DetermineCameraToUse()
     {
-        // 어떤 카메라를 사용할지 결정하는 로직을 추가
-        // 여기에서는 간단하게 메인 카메라를 사용하도록 하겠습니다.
+        Camera[] cameras = Camera.allCameras;
+
+        foreach (Camera cam in cameras)
+        {
+            if (cam.pixelRect.Contains(Input.mousePosition))
+            {
+                return cam;
+            }
+        }
+
         return Camera.main;
     }
 
@@ -130,7 +137,9 @@ public class DragAndShooting : MonoBehaviour
 
     void UpdateDrag()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Camera currentCamera = DetermineCameraToUse(); // DetermineCameraToUse 메서드 사용하여 현재 화면에 보이는 카메라 가져오기
+
+        Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
         Plane plane = new Plane(Vector3.up, transform.position);
         float distanceToPlane;
 
@@ -205,41 +214,6 @@ public class DragAndShooting : MonoBehaviour
         if (pushObjectsScript != null)
         {
             pushObjectsScript.ApplyPushForce(throwDir);
-        }
-        // 5초 후에 CameraRotate 메서드를 호출
-        Invoke("SwitchTurns", 3f);
-    }
-
-    public delegate void SwitchTurnEvent();
-    public static event SwitchTurnEvent OnSwitchTurn;
-
-    void SwitchTurns()
-    {
-        // 여기에 턴 변경 로직을 추가하면 됩니다.
-        if (mainCamera == null) return;
-
-        // 현재 포지션의 반대쪽으로 이동
-        Vector3 oppositePosition = new Vector3(-mainCamera.transform.position.x, mainCamera.transform.position.y, -mainCamera.transform.position.z);
-
-        // 현재 카메라의 쿼터니언을 가져오기
-        Quaternion currentRotation = mainCamera.transform.rotation;
-
-        // Y축 회전 각도를 현재 쿼터니언을 기반으로 계산
-        float newYRotation = currentRotation.eulerAngles.y + 180f;
-
-        // 360도를 넘어가면 0으로 초기화
-        if (newYRotation >= 360f)
-        {
-            newYRotation -= 360f;
-        }
-
-        // X축은 현재 각도로, Y축은 새로 계산된 회전 각도로, Z축은 현재 각도로 설정
-        mainCamera.transform.rotation = Quaternion.Euler(40f, newYRotation, 0f);
-        mainCamera.transform.position = oppositePosition;
-
-        if (OnSwitchTurn != null)
-        {
-            OnSwitchTurn();
         }
     }
 }
